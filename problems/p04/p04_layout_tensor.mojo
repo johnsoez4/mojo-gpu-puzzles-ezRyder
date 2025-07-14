@@ -46,7 +46,10 @@ def main():
 
         a_tensor = LayoutTensor[mut=True, dtype, layout](a.unsafe_ptr())
 
-        ctx.enqueue_function[add_10_2d](
+        compile_func = ctx.compile_function[add_10_2d]()
+        # ctx.enqueue_function[add_10_2d](  # Original puzzle
+        ctx.enqueue_function(
+            compile_func,  # Compiled...saves 50-500 nanoseconds of overhead per enqueue
             out_tensor,
             a_tensor,
             SIZE,
